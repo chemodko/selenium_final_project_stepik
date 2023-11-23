@@ -15,7 +15,7 @@ def browser(request):
 
     print("\nstart chrome browser for test..")
     browser = webdriver.Chrome(options=options)
-    browser.implicitly_wait(10)
+    browser.implicitly_wait(5)
 
     yield browser
     print("\nquit browser..")
