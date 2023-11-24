@@ -37,5 +37,13 @@ class ProductPage(BasePage):
         cart_price = self.get_cart_price()
         assert prod_price == cart_price, "Prices are not equal"
 
+    def should_not_be_success_message(self):
+        assert self.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE), \
+            "Success message is presented, but should not be"
+
+    def should_disappear_message(self):
+        assert self.is_disappeared(*ProductPageLocators.SUCCESS_MESSAGE), \
+            "Success message should disappear"
+
 
 
