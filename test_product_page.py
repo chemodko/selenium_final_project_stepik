@@ -1,6 +1,5 @@
 from .pages.product_page import ProductPage
 from .pages.basket_page import BasketPage
-import time
 import pytest
 
 
@@ -19,8 +18,8 @@ def test_guest_can_add_product_to_basket(browser, link):
     page = ProductPage(browser, link)
     page.open()
     page.should_not_be_success_message()
-    page.should_be_add_to_cart_button()
-    page.add_to_cart()
+    page.should_be_add_to_basket_button()
+    page.add_to_basket()
     page.solve_quiz_and_get_code()
 
     page.should_be_product_name()
@@ -30,8 +29,6 @@ def test_guest_can_add_product_to_basket(browser, link):
 
     # page.should_disappear_message()
 
-    # time.sleep(10)
-
 
 link_global = "https://selenium1py.pythonanywhere.com/ru/catalogue/the-shellcoders-handbook_209/"
 
@@ -40,8 +37,8 @@ link_global = "https://selenium1py.pythonanywhere.com/ru/catalogue/the-shellcode
 def test_guest_cant_see_success_message_after_adding_product_to_basket(browser):
     page = ProductPage(browser, link_global, 0)
     page.open()
-    page.should_be_add_to_cart_button()
-    page.add_to_cart()
+    page.should_be_add_to_basket_button()
+    page.add_to_basket()
     page.should_not_be_success_message()
 
 
@@ -55,8 +52,8 @@ def test_guest_cant_see_success_message(browser):
 def test_message_disappeared_after_adding_product_to_basket(browser):
     page = ProductPage(browser, link_global, 0)
     page.open()
-    page.should_be_add_to_cart_button()
-    page.add_to_cart()
+    page.should_be_add_to_basket_button()
+    page.add_to_basket()
     page.should_disappear_message()
 
 

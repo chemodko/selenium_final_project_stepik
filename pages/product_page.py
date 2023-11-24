@@ -3,11 +3,12 @@ from .locators import ProductPageLocators
 
 
 class ProductPage(BasePage):
-    def should_be_add_to_cart_button(self):
-        assert self.is_element_present(*ProductPageLocators.ADD_TO_CART_BUTTON), "Add to cart button is not presented"
+    def should_be_add_to_basket_button(self):
+        assert self.is_element_present(*ProductPageLocators.ADD_TO_BASKET_BUTTON), \
+            "Add to basket button is not presented"
 
-    def add_to_cart(self):
-        self.browser.find_element(*ProductPageLocators.ADD_TO_CART_BUTTON).click()
+    def add_to_basket(self):
+        self.browser.find_element(*ProductPageLocators.ADD_TO_BASKET_BUTTON).click()
 
     def should_be_product_name(self):
         assert self.is_element_present(*ProductPageLocators.PRODUCT_NAME), "Product name is not presented"
@@ -29,13 +30,13 @@ class ProductPage(BasePage):
     def get_product_price(self):
         return self.browser.find_element(*ProductPageLocators.PRODUCT_PRICE).text
 
-    def get_cart_price(self):
-        return self.browser.find_element(*ProductPageLocators.CART_PRICE).text
+    def get_basket_price(self):
+        return self.browser.find_element(*ProductPageLocators.BASKET_PRICE).text
 
     def should_be_equal_prices(self):
         prod_price = self.get_product_price()
-        cart_price = self.get_cart_price()
-        assert prod_price == cart_price, "Prices are not equal"
+        basket_price = self.get_basket_price()
+        assert prod_price == basket_price, "Prices are not equal"
 
     def should_not_be_success_message(self):
         assert self.is_not_element_present(*ProductPageLocators.SUCCESS_MESSAGE), \
