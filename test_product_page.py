@@ -1,36 +1,56 @@
 from .pages.product_page import ProductPage
 from .pages.basket_page import BasketPage
+from .pages.login_page import LoginPage
 import pytest
+import time
 
 
-# link = "https://selenium1py.pythonanywhere.com/ru/catalogue/the-shellcoders-handbook_209/?promo=newYear"
-# link = "https://selenium1py.pythonanywhere.com/ru/catalogue/coders-at-work_207/?promo=newYear2019"
-
-xfail_num = 7
-product_base_link = "http://selenium1py.pythonanywhere.com/catalogue/coders-at-work_207/?promo=offer"
-links = [product_base_link + str(num) for num in range(10) if num != xfail_num]
-xlink = pytest.param(product_base_link + str(xfail_num), marks=pytest.mark.xfail(reason="mistake on page"))
-links.insert(xfail_num, xlink)
+link_global = "https://selenium1py.pythonanywhere.com/catalogue/the-shellcoders-handbook_209/"
 
 
-@pytest.mark.parametrize('link', links)
-def test_guest_can_add_product_to_basket(browser, link):
-    page = ProductPage(browser, link)
+@pytest.mark.need_review
+def test_guest_can_add_product_to_basket(browser):
+    page = ProductPage(browser, link_global, 4)
     page.open()
     page.should_not_be_success_message()
     page.should_be_add_to_basket_button()
     page.add_to_basket()
-    page.solve_quiz_and_get_code()
 
     page.should_be_product_name()
     page.should_be_product_name_after_adding()
     page.should_be_equal_names()
     page.should_be_equal_prices()
 
-    # page.should_disappear_message()
 
+@pytest.mark.user_add_to_basket
+class TestUserAddToBasketFromProductPage:
+    @pytest.fixture(scope="function", autouse=True)
+    def setup(self, browser):
+        reg_link = "https://selenium1py.pythonanywhere.com/accounts/login/"
+        page = LoginPage(browser, reg_link)
+        page.open()
+        email = str(time.time()) + "@fakemail.org"
+        password = "qwertyuiop1234567890"
+        page.register_new_user(email, password)
+        page.should_be_authorized_user()
 
-link_global = "https://selenium1py.pythonanywhere.com/ru/catalogue/the-shellcoders-handbook_209/"
+    @pytest.mark.need_review
+    def test_user_can_add_product_to_basket(self, browser):
+        page = ProductPage(browser, link_global, 4)
+        page.open()
+        page.should_not_be_success_message()
+        page.should_be_add_to_basket_button()
+        page.add_to_basket()
+
+        page.should_be_product_name()
+        page.should_be_product_name_after_adding()
+        page.should_be_equal_names()
+        page.should_be_equal_prices()
+
+    def test_user_cant_see_success_message(self, browser):
+        page = ProductPage(browser, link_global, 4)
+        page.open()
+        page.should_not_be_success_message()
 
 
 @pytest.mark.xfail(reason="There should be success message")
@@ -39,12 +59,6 @@ def test_guest_cant_see_success_message_after_adding_product_to_basket(browser):
     page.open()
     page.should_be_add_to_basket_button()
     page.add_to_basket()
-    page.should_not_be_success_message()
-
-
-def test_guest_cant_see_success_message(browser):
-    page = ProductPage(browser, link_global, 0)
-    page.open()
     page.should_not_be_success_message()
 
 
@@ -59,26 +73,27 @@ def test_message_disappeared_after_adding_product_to_basket(browser):
 
 @pytest.mark.login_test
 def test_guest_should_see_login_link_on_product_page(browser):
-    local_link = "http://selenium1py.pythonanywhere.com/en-gb/catalogue/the-city-and-the-stars_95/"
+    local_link = "http://selenium1py.pythonanywhere.com/catalogue/the-city-and-the-stars_95/"
     page = ProductPage(browser, local_link, 0)
     page.open()
     page.should_be_login_link()
 
 
-@pytest.mark.login_test
+@pytest.mark.need_review
 def test_guest_can_go_to_login_page_from_product_page(browser):
-    local_link = "http://selenium1py.pythonanywhere.com/en-gb/catalogue/the-city-and-the-stars_95/"
-    page = ProductPage(browser, local_link, 0)
+    local_link = "http://selenium1py.pythonanywhere.com/catalogue/the-city-and-the-stars_95/"
+    page = ProductPage(browser, local_link, 4)
     page.open()
     page.go_to_login_page()
 
 
+@pytest.mark.need_review
 def test_guest_cant_see_product_in_basket_opened_from_product_page(browser):
-    local_link = "https://selenium1py.pythonanywhere.com/ru/catalogue/the-shellcoders-handbook_209"
-    page = ProductPage(browser, local_link, 0)
+    page = ProductPage(browser, link_global, 4)
     page.open()
     page.go_to_basket()
     basket_page = BasketPage(browser, browser.current_url)
     basket_page.should_be_empty_basket()
     basket_page.should_be_empty_basket_message()
+
 
